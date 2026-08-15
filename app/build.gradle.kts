@@ -1,14 +1,15 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     id("org.jetbrains.kotlin.android")
-    org.jetbrains.kotlin.plugin.compose
+    alias(libs.plugins.composeCompiler)
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -94,10 +95,6 @@ android {
     }
 
     val javaVersion = libs.versions.jvm.target.get()
-    kotlinOptions {
-        jvmTarget = javaVersion
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.valueOf("VERSION_$javaVersion")
         targetCompatibility = JavaVersion.valueOf("VERSION_$javaVersion")
@@ -160,6 +157,7 @@ dependencies {
     implementation(libs.bundles.kotlin.android)
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.arrow)
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.bundles.activity)
     implementation(libs.bundles.google)
@@ -185,4 +183,10 @@ dependencies {
     testImplementation(libs.androidx.work.testing)
 
     lintChecks(libs.slack.lint.compose)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(libs.versions.jvm.target.get()))
+    }
 }

@@ -1,7 +1,6 @@
 plugins {
     org.jetbrains.kotlin.plugin.compose
     id("ivy.module")
-    id("app.cash.molecule")
 }
 
 android {
@@ -29,7 +28,11 @@ composeCompiler {
 }
 
 dependencies {
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
+    // Molecule 2.x ships no Gradle plugin; the runtime relies on the
+    // Kotlin Compose compiler plugin applied above.
+    implementation(libs.cashapp.molecule.runtime)
 
     lintChecks(libs.slack.lint.compose)
 }
